@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lora', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #121212;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 60px;
+}
+/* Estilos del pie de página */
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #1a1a1a;
+    padding: 10px 0;
+    border-top: 1px solid #333;
+    z-index: 90;
+    color: #777;
+}
+footer p{
+    font-size: 50%;
+}
+/* Estilos del encabezado */
+header{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+    background-color: #1a1a1a;
+    z-index: 90;
+}
+header h1{
+    margin: 0;
+    font-family: 'Crimson Text', serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #990000;
+}
+/* Botón flotante */
+.boton-flotante{
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #990000;
+    color: #ffffff;
+    font-size: 36px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding-bottom: 4px; /* Ajuste fino para centrar el símbolo "+" verticalmente */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.boton-flotante:hover{
+    background-color: #cc0000;
+}
+.boton-flotante:active{
+    transform: scale(0.85);
+}
+
+/*Linea de union entre punto y tarjeta*/
+.tarjeta-evento::before {
+    content: "";               /* Obligatorio para que el pseudoelemento exista y se dibuje */
+    position: absolute;
+    left: -30px;               /* Saca la línea fuera de la tarjeta, justo en el hueco del margin-left */
+    top: 50%;                  /* La centra verticalmente respecto a la tarjeta */
+    transform: translateY(-50%); /* Ajuste fino para que el centrado vertical sea perfecto */
+    width: 30px;               /* El largo de la línea conectora */
+    height: 2px;               /* El grosor de la línea */
+    background-color: #333;    /* Mismo color que la línea vertical */
+}
+
+/*Contenedor de la linea de tiempo*/
+#contenedor-linea{
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 45vh 0; /* Ajusta el padding superior e inferior para que la línea de tiempo no se corte */
+    display: flex;
+    flex-direction: column;
+    gap: 150px;
+}
+
+/*Linea vertical*/
+.linea-vertical{
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #333;
+    z-index: 1;
+}
+
+@media (max-width: 880px) {
+    .linea-vertical {
+        left: calc(5% + 20px);
+    }
+}
+
+/*Bloque de cada evento*/
+.evento-bloque{
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    transform-origin: 20px center;
+}
+
+/*Nodo*/
+.nodo-circulo{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #990000;
+    border: 3px solid #121212;
+    margin-left: 11px;
+    flex-shrink: 0;
+}
+
+/*Tarjeta de evento*/
+.tarjeta-evento{
+    position: relative;
+    margin-left: 30px;
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    flex-grow: 1;
+}
+/*DEtalles del texto de la tarjeta*/
+.evento-fecha{
+    font-family: 'Crimson Text', serif;
+    font-size: 14px;
+    color: #990000;
+    font-weight: bold;
+}
+
+.tarjeta-evento p{
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #b0b0b0;
+}
+
+.evento-localizacion{
+    color: #777;
+    font-style: italic;
+}
