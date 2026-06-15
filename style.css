@@ -200,7 +200,7 @@ header h1{
     right: calc(100% - 12px);
     bottom: 2px;
     white-space: nowrap;
-    z.index: 3;
+    z-index: 3;
 }
 .mes-linea{
     position: absolute;
