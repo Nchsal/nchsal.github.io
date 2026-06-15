@@ -2,14 +2,14 @@
 const eventosDePrueba = [
     {
         id: "1",
-        fecha: "1925-01-15",
+        fecha: "1920-01-15",
         titulo: "La muerte de Jackson Elias",
         descripcion: "Jackson Elias nos citó en el Hotel Chelsea. Lo encontramos asesinado en su habitación. Había símbolos extraños tallados en su frente y pistas que apuntan a una secta.",
         localizacion: "Nueva York"
     },
     {
         id: "2",
-        fecha: "1925-01-20",
+        fecha: "1920-01-20",
         titulo: "Investigación en la Gaceta del Profesor",
         descripcion: "Revisamos los archivos del periódico de la Universidad y descubrimos recortes sobre la expedición Carlyle. Todo parece encajar de forma terrorífica.",
         localizacion: "Nueva York"
@@ -21,70 +21,123 @@ console.log("¡JavaScript enlazado correctamente!");
 console.log("Eventos cargados:", eventosDePrueba);
 
 const contenedorLinea = document.getElementById("contenedor-linea");
+// Variable global para controlar el año actual en pantalla
+let añoActualGlobal = "";
 
 function renderizarLineaDeTiempo(eventos) {
-    contenedorLinea.innerHTML = '<div class="linea-vertical"></div>'; // Limpiar el contenedor antes de renderizar
+    contenedorLinea.innerHTML = '<div class="linea-vertical"></div>'; // Limpiar antes de renderizar
 
-    eventos.forEach(evento => {
+    // Ordenamos los eventos por fecha por si acaso vienen desordenados
+    eventos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+    let ultimoAño = null;
+    let ultimoMes = null;
+    let ultimaFecha = null;
+
+    eventos.forEach((evento, index) => {
+        const fechaActual = new Date(evento.fecha);
+        const añoActual = fechaActual.getFullYear();
+        
+        // Obtener el nombre del mes en español
+        const mesActual = fechaActual.toLocaleDateString('es-ES', { month: 'long' });
+
+        // 1. SEPARADOR DE MES: Si cambia el mes (o el año), metemos la línea divisoria
+        if (mesActual !== ultimoMes || añoActual !== ultimoAño) {
+            const separador = document.createElement("div");
+            separador.classList.add('separador-mes');
+            separador.innerHTML = `
+                <span class="mes-texto">${mesActual}</span>
+                <div class="mes-linea"></div>
+            `;
+            contenedorLinea.appendChild(separador);
+            ultimoMes = mesActual;
+            ultimoAño = añoActual;
+        }
+
+        // 2. CREAR EL BLOQUE DEL EVENTO
         const bloque = document.createElement("div");
         bloque.classList.add('evento-bloque');
+        // Guardamos el año en el elemento para que el scroll sepa cuál es
+        bloque.dataset.anio = añoActual;
 
         bloque.innerHTML = `
             <div class="nodo-circulo"></div>
             <div class="tarjeta-evento">
-            <span class="evento-fecha">${evento.fecha}</span>
+                <span class="evento-fecha">${evento.fecha}</span>
                 <h3>${evento.titulo}</h3>
                 <p>${evento.descripcion}</p>
                 <small class="evento-localizacion">📍 ${evento.localizacion}</small>
             </div>
         `;
 
+        // 3. DISTANCIA RELATIVA: Ajustamos el espacio según el tiempo pasado
+        if (index > 0 && ultimaFecha) {
+            const diferenciaTiempo = fechaActual - ultimaFecha;
+            const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
+            
+            // Cada día añade 1.5px de separación, con un tope máximo de 200px para que no se vuelva infinito
+            const margenExtra = Math.min(diferenciaDias * 1.5, 200);
+            bloque.style.marginTop = `${margenExtra}px`;
+        }
+
         contenedorLinea.appendChild(bloque);
+        ultimaFecha = fechaActual;
     });
 }
-// --- EFECTO CILINDRO CON EL SCROLL ---
 
+// --- EFECTO CILINDRO Y DETECCIÓN DE AÑO AL HACER SCROLL ---
 function actualizarEfectoCilindro() {
-    // 1. Encontramos la mitad vertical de la pantalla (la "cámara")
     const centroPantalla = window.innerHeight / 2;
-    
-    // 2. Capturamos todos los bloques de eventos que hay en la página
     const bloques = document.querySelectorAll('.evento-bloque');
+    const divAño = document.getElementById("año-flotante");
     
+    let bloqueMasCercano = null;
+    let distanciaMinima = Infinity;
+
     bloques.forEach(bloque => {
-        // Obtenemos la posición del bloque respecto a la pantalla actual
         const rect = bloque.getBoundingClientRect();
-        // Calculamos el centro vertical del bloque de la tarjeta
         const centroBloque = rect.top + (rect.height / 2);
-        
-        // 3. Calculamos la distancia absoluta entre el centro de la pantalla y el bloque
         const distanciaAlCentro = Math.abs(centroPantalla - centroBloque);
         
-        // 4. Normalizamos la distancia (por ejemplo, en un radio de 400px)
-        // Cuanto más cerca del centro, el factor se acercará a 1. Cuanto más lejos, a 0.
-        const radioEfecto = 400; 
+        // Buscamos cuál es el bloque que está cruzando el centro de la pantalla ahora mismo
+        if (distanciaAlCentro < distanciaMinima) {
+            distanciaMinima = distanciaAlCentro;
+            bloqueMasCercano = bloque;
+        }
+
+        // Aplicamos el efecto cilindro que ya tenías
+        const radioEfecto = 400;
         let factor = 1 - (distanciaAlCentro / radioEfecto);
         
-        // Ponemos límites para que no devuelva números negativos si se aleja mucho
         if (factor < 0) factor = 0;
         if (factor > 1) factor = 1;
         
-        // 5. Convertimos ese factor en valores de Escala y Opacidad
-        // En el centro (factor 1): escala 1.1 y opacidad 1
-        // Fuera del radio (factor 0): escala 0.4 y opacidad 0.15 (casi invisibles y muy pequeñas)
-        const escala = 0.4 + (factor * 0.7); 
+        const escala = 0.4 + (factor * 0.7);
         const opacidad = 0.15 + (factor * 0.85);
         
-        // 6. Aplicamos la magia tridimensional con CSS dinámico
-        // Usamos un ligero efecto de perspectiva hacia el fondo (translateZ)
         bloque.style.transform = `scale(${escala})`;
         bloque.style.opacity = opacidad;
     });
+
+    // Cambiar el año flotante con fundido rápido si cambia el año del bloque central
+    if (bloqueMasCercano && divAño) {
+        const añoBloque = bloqueMasCercano.dataset.anio;
+        if (añoBloque !== añoActualGlobal) {
+            añoActualGlobal = añoBloque;
+            
+            // Añadimos clase para difuminar rápido
+            divAño.classList.add("año-cambiando");
+            
+            setTimeout(() => {
+                divAño.innerText = añoActualGlobal;
+                // Quitamos clase para que vuelva a aparecer suavemente
+                divAño.classList.remove("año-cambiando");
+            }, 150); // El cambio ocurre a mitad de la animación
+        }
+    }
 }
 
+// Inicialización de la app
 renderizarLineaDeTiempo(eventosDePrueba);
-// Escuchamos el evento de scroll del navegador para ejecutar el cálculo
 window.addEventListener('scroll', actualizarEfectoCilindro);
-
-// Lo ejecutamos también una vez al cargar la página para que aplique el tamaño inicial
 actualizarEfectoCilindro();

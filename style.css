@@ -96,6 +96,7 @@ header h1{
     display: flex;
     flex-direction: column;
     gap: 150px;
+    transition: margin 0.2s ease;
 }
 
 /*Linea vertical*/
@@ -109,11 +110,6 @@ header h1{
     z-index: 1;
 }
 
-@media (max-width: 880px) {
-    .linea-vertical {
-        left: calc(5% + 20px);
-    }
-}
 
 /*Bloque de cada evento*/
 .evento-bloque{
@@ -165,4 +161,88 @@ header h1{
 .evento-localizacion{
     color: #777;
     font-style: italic;
+}
+
+/*Año flotante*/
+#año-flotante{
+    position: fixed;
+    top: 110px;
+    left: 20px;
+    font-family: 'Crimson Text', serif;
+    font-size: 6rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.05);
+    z-index: 10;
+    pointer-events: none; /* Permite hacer clic a través del año flotante */
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.año-cambiando{
+    opacity: 0.2;
+    transform: scale(0.95);
+}
+
+/*Seprador de meses*/
+.separador-mes{
+    position: relative;
+    width: 100%;
+    height: 35px;
+    margin: 20px 0;
+    z-index: 2;
+}
+.mes-texto{
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #990000;
+    position: absolute;
+    right: calc(100% - 12px);
+    bottom: 2px;
+    white-space: nowrap;
+    z.index: 3;
+}
+.mes-linea{
+    position: absolute;
+    left: -80px;
+    right: 0;
+    height: 2px;
+    /* El degradado empieza en rojo sólido y decae hacia la derecha de las tarjetas */
+    background: linear-gradient(to right, 
+        #990000 0%, 
+        #990000 140px, 
+        rgba(153, 0, 0, 0.6) 190px, 
+        rgba(51, 51, 51, 0.2) 100%
+    );
+    bottom: 0;
+    z-index: 2;
+}
+
+@media (max-width: 900px){
+    #año-flotante{
+        font-size: 1.5rem;
+        left: 8px;
+        top: 85px;
+    }
+
+    #contentedor-linea{
+        width: 75%;
+        margin-left: calc(15% + 10px);
+    }
+
+    .mes-texto{
+        font-size: 13px;
+        letter-spacing: 1px;
+        right: calc(100% - 12px);
+    }
+
+    .mes-linea{
+        left: -75px;
+        background: linear-gradient(to right, 
+            #990000 0%, 
+            #990000 100px, 
+            rgba(153, 0, 0, 0.6) 150px, 
+            rgba(51, 51, 51, 0.2) 100%
+        );
+    }
 }
