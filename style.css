@@ -246,3 +246,393 @@ header h1{
         );
     }
 }
+
+/* Adaptación para móviles */
+
+@media (max-width: 768px) {
+    /* 1. En móviles, el año flotante gigante no cabe de fondo; lo ocultamos 
+          para que la interfaz quede limpia y enfocada en el contenido */
+    #año-flotante {
+        display: none;
+    }
+
+    /* 2. Empujamos la línea de tiempo un poco a la derecha para dar carril al mes */
+    #contenedor-linea {
+        width: 85%;
+        margin-left: 12%; 
+        gap: 100px; /* Reducimos un poco el salto entre tarjetas */
+    }
+
+    /* 3. Forzamos la posición de la línea vertical gris para pantallas pequeñas */
+    .linea-vertical {
+        left: 20px !important;
+    }
+
+    /* 4. Hacemos el texto del mes más compacto */
+    .mes-texto {
+        font-size: 12px;
+        letter-spacing: 1px;
+        right: calc(100% - 12px); /* Pegado al eje gris */
+    }
+
+    /* 5. La línea roja se acorta por la izquierda para no salirse de la pantalla del móvil */
+    .mes-linea {
+        left: -60px;
+        background: linear-gradient(to right, 
+            #990000 0%, 
+            #990000 90px, 
+            rgba(153, 0, 0, 0.6) 130px, 
+            rgba(51, 51, 51, 0.2) 100%
+        );
+    }
+}
+
+
+/* --- VENTANA MODAL DEL FORMULARIO --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0); /* Arranca totalmente transparente */
+    backdrop-filter: blur(0px);         /* Arranca sin difuminar */
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    
+    /* Transición suave para el fondo */
+    transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.modal.mostrar-modal {
+    display: flex; /* Cambiamos a flex para centrar */
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px); /* Difumina lo que hay detrás */
+}
+
+.modal-contenido {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    max-height: 85vh;
+    overflow-y: auto;
+
+    /* El truco del agrandado: arranca encogido e invisible */
+    transform: scale(0.7);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+}
+
+/* Cuando la modal se muestra, la tarjeta interior se agranda a su tamaño real */
+.modal.mostrar-modal .modal-contenido {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.tarjeta-maxi-contenido {
+    max-width: 650px;
+    border-left: 4px solid #990000;
+    padding: 35px;
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    color: #777;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.cerrar-modal:hover {
+    color: #990000;
+}
+
+.modal-contenido h2 {
+    font-family: 'Crimson Text', serif;
+    color: #990000;
+    margin-top: 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.grupo-campo {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.grupo-campo label {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.grupo-campo input, .grupo-campo textarea {
+    background-color: #121212;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 10px;
+    color: #e0e0e0;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+}
+
+.grupo-campo input:focus, .grupo-campo textarea:focus {
+    border-color: #990000;
+    outline: none;
+}
+
+.btn-guardar {
+    background-color: #990000;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Crimson Text', serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50%;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-guardar:hover {
+    background-color: #bd0000;
+}
+
+/* --- ESTILOS DE LA TARJETA MAXIMIZADA (MAXI) --- */
+.tarjeta-maxi-contenido {
+    max-width: 650px; /* Un poco más ancha que el formulario para leer bien */
+    border-left: 4px solid #990000; /* Detalle rojo Lovecraftiano en el borde */
+    padding: 35px;
+}
+
+.maxi-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#maxi-localizacion {
+    background-color: #222;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #aaa;
+    border: 1px solid #333;
+}
+
+#maxi-titulo {
+    font-family: 'Crimson Text', serif;
+    font-size: 2rem;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#maxi-descripcion {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #d0d0d0;
+    margin-bottom: 25px;
+    text-align: justify;
+}
+
+.maxi-seccion {
+    margin-bottom: 20px;
+}
+
+.maxi-seccion h4 {
+    font-family: 'Crimson Text', serif;
+    color: #990000;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+}
+
+/* Contenedores de las píldoras/cajitas */
+.contenedor-tags, .contenedor-tags-claves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Píldoras de PNJs */
+.tag-pnj {
+    background-color: #2a1f1f;
+    color: #ff9999;
+    border: 1px solid #4a2a2a;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Píldoras de Etiquetas */
+.tag-etiqueta {
+    background-color: #1f252a;
+    color: #99ccff;
+    border: 1px solid #2a3a4a;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Barra de acciones (Botones inferiores) */
+.maxi-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.btn-accion {
+    padding: 8px 16px;
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-borrar {
+    background-color: #222;
+    color: #777;
+    border: 1px solid #333;
+}
+.btn-borrar:hover {
+    background-color: #3a1111;
+    color: #ff5555;
+    border-color: #7a1a1a;
+}
+
+.btn-modificar {
+    background-color: #333;
+    color: #ccc;
+}
+.btn-modificar:hover {
+    background-color: #990000;
+    color: white;
+}
+
+.cerrar-modal-maxi {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 26px;
+    color: #666;
+    cursor: pointer;
+}
+.cerrar-modal-maxi:hover { color: #990000; }
+
+/* ==========================================================================
+   NUEVO: BOTONERA FLOTANTE INFERIOR (BUSCADOR JUNTO AL +)
+   ========================================================================== */
+
+/* Contenedor principal abajo a la derecha */
+.botonera-flotante-grupo {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre el buscador y el botón + */
+    z-index: 100;
+}
+
+/* Modificamos tu .boton-flotante para que ya no sea absolute/fixed individualmente */
+.boton-flotante {
+    position: relative; /* Cambiado de fixed a relative */
+    bottom: auto;
+    right: auto;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #990000;
+    color: white;
+    font-size: 32px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background-color 0.2s;
+    font-family: 'Lora', serif;
+}
+.boton-flotante:hover {
+    transform: scale(1.1);
+    background-color: #cc0000;
+}
+
+/* Contenedor interno del buscador */
+.contenedor-buscador {
+    display: flex;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 30px;
+    padding: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: border-color 0.3s;
+}
+
+.contenedor-buscador:focus-within {
+    border-color: #990000;
+}
+
+/* Botón de la lupa circular */
+.btn-lupa {
+    background-color: #222;
+    border: 1px solid #333;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+.btn-lupa:hover {
+    transform: scale(1.05);
+    background-color: #2a2a2a;
+}
+
+/* Input de texto oculto hacia la izquierda */
+.input-buscar {
+    width: 0px;
+    background: none;
+    border: none;
+    outline: none;
+    color: #e0e0e0;
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    padding: 0;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s;
+    opacity: 0;
+}
+
+/* Al activarse se despliega abriendo espacio hacia la izquierda */
+.contenedor-buscador.activo .input-buscar {
+    width: 250px;
+    padding: 0 15px;
+    opacity: 1;
+}
