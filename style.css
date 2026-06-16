@@ -749,3 +749,35 @@ header h1{
         font-size: 40%; 
     }
 }
+
+/* Contenedor relativo para posicionar el ojo */
+.contenedor-password-ojo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Forzamos a que el input ocupe todo el ancho */
+.contenedor-password-ojo input {
+    width: 100% !important;
+    padding-right: 45px; /* Espacio para que el texto no se pise con el ojo */
+}
+
+/* Estilo para el botón del ojo */
+.btn-ojo {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 5px;
+    outline: none;
+    transition: transform 0.1s ease;
+}
+
+.btn-ojo:active {
+    transform: scale(0.85); /* Efecto de pulsado */
+}

@@ -292,6 +292,9 @@ function reestablecerFormulario() {
         capaPas.style.display = "flex";
         document.getElementById("form-password").setAttribute("required", "true");
     }
+    // Forzar a que vuelva a ser de tipo password al resetear el formulario
+    if (inputPassword) inputPassword.type = "password";
+    if (btnVerPassword) btnVerPassword.innerText = "👁️";
 }
 
 // --- BUSCADOR EN TIEMPO REAL ---
@@ -331,3 +334,22 @@ window.addEventListener("click", (e) => {
     if (e.target === modalFormulario) { cerrarModalConEfecto(modalFormulario); }
     if (e.target === modalMaxi) { cerrarModalConEfecto(modalMaxi); }
 });
+
+// --- MOSTRAR / OCULTAR CONTRASEÑA ---
+const btnVerPassword = document.getElementById("btn-ver-password");
+const inputPassword = document.getElementById("form-password");
+
+if (btnVerPassword && inputPassword) {
+    btnVerPassword.addEventListener("click", () => {
+        // Si es de tipo password, lo pasamos a texto, y viceversa
+        if (inputPassword.type === "password") {
+            inputPassword.type = "text";
+            btnVerPassword.innerText = "🔒"; // Cambia el icono a un candado para ocultar
+            btnVerPassword.title = "Ocultar contraseña";
+        } else {
+            inputPassword.type = "password";
+            btnVerPassword.innerText = "👁️"; // Vuelve al ojo para mostrar
+            btnVerPassword.title = "Mostrar contraseña";
+        }
+    });
+}
