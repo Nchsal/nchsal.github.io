@@ -636,3 +636,116 @@ header h1{
     padding: 0 15px;
     opacity: 1;
 }
+
+/* ==========================================================================
+   DISEÑO ADAPTATIVO DE LA BOTONERA FLOTANTE INFERIOR
+   ========================================================================== */
+.botonera-flotante-grupo {
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 150;
+}
+
+.boton-flotante {
+    position: relative;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #990000;
+    color: #ffffff;
+    font-size: 32px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.contenedor-buscador {
+    display: flex;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 30px;
+    padding: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: border-color 0.3s;
+}
+
+.contenedor-buscador:focus-within {
+    border-color: #990000;
+}
+
+.btn-lupa {
+    background-color: #222;
+    border: 1px solid #333;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.input-buscar {
+    width: 0px;
+    background: none;
+    border: none;
+    outline: none;
+    color: #e0e0e0;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    padding: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+    opacity: 0;
+}
+
+.contenedor-buscador.activo .input-buscar {
+    width: 200px;
+    padding: 0 10px 0 15px;
+    opacity: 1;
+}
+
+/* Estilos de la casilla de clave en el formulario */
+.seccion-password-web input {
+    border: 1px dashed #5a2a2a;
+    background-color: #161212;
+}
+
+/* RESPONSIVE AJUSTADO PARA PANTALLAS MÓVILES */
+@media (max-width: 600px) {
+    .botonera-flotante-grupo {
+        bottom: 20px;
+        right: 15px;
+        gap: 8px;
+    }
+    .boton-flotante {
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+    }
+    .btn-lupa {
+        width: 40px;
+        height: 40px;
+    }
+    /* El input expandido en móvil se acorta para no desbordar */
+    .contenedor-buscador.activo .input-buscar {
+        width: 135px;
+        font-size: 0.85rem;
+        padding: 0 5px 0 10px;
+    }
+    footer p { 
+        font-size: 40%; 
+    }
+}

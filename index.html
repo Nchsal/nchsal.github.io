@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Las Máscaras de Nyarlathotep: Línea de tiempo</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="style.css">    
 </head>
 <body>
@@ -13,18 +14,18 @@
 <main>
     <div id="año-flotante">1920</div>
     <div id="contenedor-linea">
-        <div class="linea-vertical">
-
-        </div>
+        <div class="linea-vertical"></div>
     </div>
+
     <div class="botonera-flotante-grupo">
         <div class="contenedor-buscador">
-            <input type="text" id="input-busqueda" class="input-buscar" placeholder="Buscar título, PNJ, etiqueta...">
+            <input type="text" id="input-busqueda" class="input-buscar" placeholder="Buscar...">
             <button id="btn-buscar" class="btn-lupa" title="Buscar eventos">🔍</button>
         </div>
         <button id="btn-añadir" class="boton-flotante">+</button>
     </div>
-<div id="modal-formulario" class="modal">
+
+    <div id="modal-formulario" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal">&times;</span>
             <h2>Nuevo Evento</h2>
@@ -51,37 +52,38 @@
                 </div>
                 <div class="grupo-campo">
                     <label for="form-etiquetas">Etiquetas (separadas por comas):</label>
-                    <input type="text" id="form-etiquetas" placeholder="Ej: Expedición Carlyle, Culto, Secta">
+                    <input type="text" id="form-etiquetas" placeholder="Ej: Expedición Carlyle, Culto">
                 </div>
+
+                <div class="grupo-campo seccion-password-web">
+                    <label for="form-password" style="color: #ff9999;">🔑 Contraseña de la Campaña:</label>
+                    <input type="password" id="form-password" placeholder="Requerido la primera vez">
+                </div>
+
                 <button type="submit" class="btn-guardar">Guardar</button>
             </form>
         </div>
     </div>
-<div id="modal-tarjeta-maxi" class="modal">
+
+    <div id="modal-tarjeta-maxi" class="modal">
         <div class="modal-contenido tarjeta-maxi-contenido">
             <span class="cerrar-modal-maxi">&times;</span>
-            
             <div class="maxi-cabecera">
                 <span id="maxi-fecha" class="evento-fecha"></span>
                 <span id="maxi-localizacion"></span>
             </div>
-            
             <h2 id="maxi-titulo"></h2>
-            
             <div class="maxi-cuerpo">
                 <p id="maxi-descripcion"></p>
-                
                 <div class="maxi-seccion">
-                    <h4>👥 PNJs Involucrados:</h4>
+                    <h4>👥 PNJs:</h4>
                     <div id="maxi-pnjs" class="contenedor-tags"></div>
                 </div>
-                
                 <div class="maxi-seccion">
-                    <h4>🏷️ Etiquetas / Claves:</h4>
+                    <h4>🏷️ Etiquetas:</h4>
                     <div id="maxi-etiquetas" class="contenedor-tags-claves"></div>
                 </div>
             </div>
-
             <div class="maxi-acciones">
                 <button id="btn-eliminar-evento" class="btn-accion btn-borrar">🗑️ Borrar</button>
                 <button id="btn-modificar-evento" class="btn-accion btn-modificar">✏️ Modificar</button>
@@ -94,8 +96,7 @@
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>

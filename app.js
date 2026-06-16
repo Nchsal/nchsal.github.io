@@ -13,7 +13,7 @@ const db = firebase.firestore();
 
 console.log("¡Conexión con Firebase establecida correctamente!");
 
-// CONTRASEÑA DE LA CAMPAÑA (Pon exactamente la misma que pusiste en las Reglas de Firebase)
+// CONTRASEÑA DE LA CAMPAÑA
 const CONTRASEÑA_CORRECTA = "Cthulhu2026"; 
 
 const contenedorLinea = document.getElementById("contenedor-linea");
@@ -23,22 +23,9 @@ let eventoSeleccionadoId = null;
 let modoEdicion = false;
 let eventoEdicionId = null;
 
-// --- FUNCIÓN CENTRALIZADA PARA PEDIR LA CONTRASEÑA SOLO UNA VEZ ---
-function obtenerContraseñaCampaña() {
-    let claveGuardada = sessionStorage.getItem("clave_campaña");
-
-    if (!claveGuardada) {
-        const passwordIntroducido = prompt("Introduce la contraseña de la campaña para gestionar los eventos:");
-        
-        if (passwordIntroducido === CONTRASEÑA_CORRECTA) {
-            sessionStorage.setItem("clave_campaña", passwordIntroducido);
-            claveGuardada = passwordIntroducido;
-            console.log("¡Contraseña validada y guardada en la sesión!");
-        } else if (passwordIntroducido !== null) {
-            alert("❌ Contraseña incorrecta. No tienes permisos para realizar cambios.");
-        }
-    }
-    return claveGuardada;
+// --- COMPROBAR SI LA SESIÓN YA TIENE EL TOKEN CORRECTO ---
+function comprobarSesionGuardada() {
+    return sessionStorage.getItem("clave_campaña") === CONTRASEÑA_CORRECTA;
 }
 
 // --- RENDERIZAR LA LÍNEA DE TIEMPO ---
@@ -144,7 +131,7 @@ db.collection("eventos").onSnapshot((snapshot) => {
 
 window.addEventListener('scroll', actualizarEfectoCilindro);
 
-// --- MODALES CON EFECTO ANIMADO ---
+// --- MODALES ---
 const modalFormulario = document.getElementById("modal-formulario");
 const modalMaxi = document.getElementById("modal-tarjeta-maxi");
 const btnAñadir = document.getElementById("btn-añadir");
@@ -161,7 +148,7 @@ function cerrarModalConEfecto(modal) {
     setTimeout(() => { modal.style.display = "none"; }, 350);
 }
 
-// --- CLICK EN TARJETA MINI -> ABRIR MAXI ---
+// --- CLICK MINI -> ABRIR MAXI ---
 contenedorLinea.addEventListener("click", (e) => {
     const tarjeta = e.target.closest(".tarjeta-evento");
     if (!tarjeta) return;
@@ -195,8 +182,21 @@ if (formularioEvento) {
     formularioEvento.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        const passwordValido = obtenerContraseñaCampaña();
-        if (!passwordValido) return;
+        let tokenClave = "";
+        
+        // Si ya está validado, usamos el token guardado. Si no, leemos el campo de texto.
+        if (comprobarSesionGuardada()) {
+            tokenClave = CONTRASEÑA_CORRECTA;
+        } else {
+            const pswInput = document.getElementById("form-password").value;
+            if (pswInput === CONTRASEÑA_CORRECTA) {
+                sessionStorage.setItem("clave_campaña", CONTRASEÑA_CORRECTA);
+                tokenClave = CONTRASEÑA_CORRECTA;
+            } else {
+                alert("❌ Contraseña incorrecta. No tienes permisos para modificar la base de datos.");
+                return;
+            }
+        }
 
         const datosEvento = {
             fecha: document.getElementById("form-fecha").value,
@@ -205,7 +205,7 @@ if (formularioEvento) {
             descripcion: document.getElementById("form-descripcion").value,
             pnjs: document.getElementById("form-pnjs").value ? document.getElementById("form-pnjs").value.split(",").map(p => p.trim()) : [],
             etiquetas: document.getElementById("form-etiquetas").value ? document.getElementById("form-etiquetas").value.split(",").map(e => e.trim()) : [],
-            claveSecreta: passwordValido
+            claveSecreta: tokenClave
         };
 
         if (modoEdicion && eventoEdicionId) {
@@ -214,14 +214,14 @@ if (formularioEvento) {
                     db.collection("eventos").doc(eventoEdicionId).update({ claveSecreta: firebase.firestore.FieldValue.delete() });
                     cerrarModalConEfecto(modalFormulario);
                     reestablecerFormulario();
-                }).catch(() => alert("❌ Error de permisos en Firebase. Contraseña incorrecta."));
+                }).catch(() => alert("❌ Error de permisos en Firebase."));
         } else {
             db.collection("eventos").add(datosEvento)
                 .then((docRef) => {
                     db.collection("eventos").doc(docRef.id).update({ claveSecreta: firebase.firestore.FieldValue.delete() });
                     cerrarModalConEfecto(modalFormulario);
                     reestablecerFormulario();
-                }).catch(() => alert("❌ Error de permisos en Firebase. Contraseña incorrecta."));
+                }).catch(() => alert("❌ Error de permisos en Firebase."));
         }
     });
 }
@@ -244,6 +244,16 @@ document.getElementById("btn-modificar-evento").addEventListener("click", () => 
     modalFormulario.querySelector("h2").innerText = "Editar Evento de Campaña";
     modalFormulario.querySelector(".btn-guardar").innerText = "Actualizar Cambios";
 
+    // Si ya estamos autenticados, ocultamos el input de contraseña del formulario
+    const capaPas = document.querySelector(".seccion-password-web");
+    if (comprobarSesionGuardada() && capaPas) {
+        capaPas.style.display = "none";
+        document.getElementById("form-password").removeAttribute("required");
+    } else if (capaPas) {
+        capaPas.style.display = "flex";
+        document.getElementById("form-password").setAttribute("required", "true");
+    }
+
     cerrarModalConEfecto(modalMaxi);
     setTimeout(() => { abrirModalConEfecto(modalFormulario); }, 350);
 });
@@ -251,15 +261,19 @@ document.getElementById("btn-modificar-evento").addEventListener("click", () => 
 // --- BORRAR ---
 document.getElementById("btn-eliminar-evento").addEventListener("click", () => {
     const evento = eventosCargadosGlobal.find(ev => ev.id === eventoSeleccionadoId);
-    if (confirm(`¿Seguro que quieres eliminar: "${evento.titulo}"?`)) {
-        const passwordValido = obtenerContraseñaCampaña();
-        if (passwordValido) {
-            db.collection("eventos").doc(eventoSeleccionadoId).delete()
-                .then(() => {
-                    cerrarModalConEfecto(modalMaxi);
-                    eventoSeleccionadoId = null;
-                });
-        }
+    
+    // Si no está autenticado, le obligamos a abrir modificar una vez para meter la contraseña
+    if (!comprobarSesionGuardada()) {
+        alert("🔒 Por seguridad en móviles, para borrar primero necesitas validar la contraseña. Haz clic en '✏️ Modificar' e introdúcela una vez.");
+        return;
+    }
+
+    if (confirm(`¿Seguro que quieres eliminar definitivamente: "${evento.titulo}"?`)) {
+        db.collection("eventos").doc(eventoSeleccionadoId).delete()
+            .then(() => {
+                cerrarModalConEfecto(modalMaxi);
+                eventoSeleccionadoId = null;
+            }).catch(() => alert("No se pudo borrar. Error de autenticación."));
     }
 });
 
@@ -269,6 +283,15 @@ function reestablecerFormulario() {
     eventoEdicionId = null;
     modalFormulario.querySelector("h2").innerText = "Nuevo Evento";
     modalFormulario.querySelector(".btn-guardar").innerText = "Guardar Evento";
+    
+    const capaPas = document.querySelector(".seccion-password-web");
+    if (comprobarSesionGuardada() && capaPas) {
+        capaPas.style.display = "none";
+        document.getElementById("form-password").removeAttribute("required");
+    } else if (capaPas) {
+        capaPas.style.display = "flex";
+        document.getElementById("form-password").setAttribute("required", "true");
+    }
 }
 
 // --- BUSCADOR EN TIEMPO REAL ---
