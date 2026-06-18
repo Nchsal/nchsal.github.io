@@ -119,6 +119,7 @@ header h1{
     z-index: 2;
     transition: transform 0.1s ease-out, opacity 0.1s ease-out;
     transform-origin: 20px center;
+    margin-bottom: 20px; /* Espacio entre eventos para que no se vean pegados */
 }
 
 /*Nodo*/

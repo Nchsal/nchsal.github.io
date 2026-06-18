@@ -71,7 +71,7 @@ function renderizarLineaDeTiempo(eventos) {
 
         if (index > 0 && ultimaFecha) {
             const diferenciaDias = Math.floor((fechaActual - ultimaFecha) / (1000 * 60 * 60 * 24));
-            bloque.style.marginTop = `${Math.min(diferenciaDias * 1.5, 200)}px`;
+            bloque.style.marginTop = `${Math.min(diferenciaDias * 0.4, 70)}px`;
         }
 
         contenedorLinea.appendChild(bloque);
