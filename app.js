@@ -69,9 +69,22 @@ function renderizarLineaDeTiempo(eventos) {
             </div>
         `;
 
-        if (index > 0 && ultimaFecha) {
+  if (index > 0 && ultimaFecha) {
             const diferenciaDias = Math.floor((fechaActual - ultimaFecha) / (1000 * 60 * 60 * 24));
-            bloque.style.marginTop = `${Math.min(diferenciaDias * 0.4, 70)}px`;
+            
+            // Si el salto es de más de 30 días, ponemos un símbolo de corte temporal
+            if (diferenciaDias > 30) {
+                const elementoSalto = document.createElement("div");
+                elementoSalto.classList.add("salto-temporal");
+                elementoSalto.innerHTML = `<span>⏳ Salto de ${Math.floor(diferenciaDias / 30)} meses ⏳</span>`;
+                contenedorLinea.appendChild(elementoSalto);
+                
+                // Distancia fija y pequeña después del símbolo de salto
+                bloque.style.marginTop = "20px";
+            } else {
+                // Distancia proporcional normal si son menos de 30 días
+                bloque.style.marginTop = `${diferenciaDias * 2}px`;
+            }
         }
 
         contenedorLinea.appendChild(bloque);

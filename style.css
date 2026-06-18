@@ -782,3 +782,42 @@ header h1{
 .btn-ojo:active {
     transform: scale(0.85); /* Efecto de pulsado */
 }
+
+/* ==========================================================================
+   INDICADOR DE SALTO TEMPORAL EN LA LÍNEA
+   ========================================================================== */
+.salto-temporal {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    z-index: 10;
+}
+
+/* El texto o indicador del salto */
+.salto-temporal span {
+    background-color: #1a1515; /* Fondo oscuro para tapar la línea vertical continua */
+    color: #777;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 4px 15px;
+    border: 1px dashed #443333;
+    border-radius: 20px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+}
+
+/* Un pequeño efecto de interrupción en la línea detrás del texto (opcional) */
+.salto-temporal::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, transparent, transparent 4px, #121212 4px, #121212 8px);
+    z-index: -1;
+}
