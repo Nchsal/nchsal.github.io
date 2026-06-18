@@ -42,6 +42,21 @@ function renderizarLineaDeTiempo(eventos) {
         const añoActual = fechaActual.getFullYear();
         const mesActual = fechaActual.toLocaleDateString('es-ES', { month: 'long' });
 
+        let diferenciaDias = 0;
+        if (index > 0 && ultimaFecha) {
+            diferenciaDias = Math.floor((fechaActual - ultimaFecha) / (1000 * 60 * 60 * 24));
+        }
+
+        // 1. PRIMERO: Si hay un salto de más de 30 días, se pone el cartel inmediatamente después de la tarjeta anterior
+        if (diferenciaDias > 30) {
+            const elementoSalto = document.createElement("div");
+            elementoSalto.classList.add("salto-temporal");
+            const meses = Math.floor(diferenciaDias / 30);
+            elementoSalto.innerHTML = `<span>⏳ Salto de ${meses} ${meses === 1 ? 'mes' : 'meses'} ⏳</span>`;
+            contenedorLinea.appendChild(elementoSalto);
+        }
+
+        // 2. SEGUNDO: Si cambia el mes o el año, pintamos la línea y el nombre del nuevo mes
         if (mesActual !== ultimoMes || añoActual !== ultimoAño) {
             const separador = document.createElement("div");
             separador.classList.add('separador-mes');
@@ -51,6 +66,7 @@ function renderizarLineaDeTiempo(eventos) {
             ultimoAño = añoActual;
         }
 
+        // 3. TERCERO: Creamos el bloque de la tarjeta
         const bloque = document.createElement("div");
         bloque.classList.add('evento-bloque');
         bloque.dataset.anio = añoActual;
@@ -69,21 +85,14 @@ function renderizarLineaDeTiempo(eventos) {
             </div>
         `;
 
-  if (index > 0 && ultimaFecha) {
-            const diferenciaDias = Math.floor((fechaActual - ultimaFecha) / (1000 * 60 * 60 * 24));
-            
-            // Si el salto es de más de 30 días, ponemos un símbolo de corte temporal
+        // 4. CUARTO: Aplicamos un margen súper compacto proporcional al tiempo
+        if (index > 0) {
             if (diferenciaDias > 30) {
-                const elementoSalto = document.createElement("div");
-                elementoSalto.classList.add("salto-temporal");
-                elementoSalto.innerHTML = `<span>⏳ Salto de ${Math.floor(diferenciaDias / 30)} meses ⏳</span>`;
-                contenedorLinea.appendChild(elementoSalto);
-                
-                // Distancia fija y pequeña después del símbolo de salto
-                bloque.style.marginTop = "20px";
+                // Margen muy pequeño si acaba de haber un cartel de salto
+                bloque.style.marginTop = "8px";
             } else {
-                // Distancia proporcional normal si son menos de 30 días
-                bloque.style.marginTop = `${diferenciaDias * 2}px`;
+                // Distancia proporcional ultra compacta (solo 0.6px por día) + un mínimo de 4px
+                bloque.style.marginTop = `${4 + (diferenciaDias * 0.6)}px`;
             }
         }
 
