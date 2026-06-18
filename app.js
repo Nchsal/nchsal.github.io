@@ -51,8 +51,25 @@ function renderizarLineaDeTiempo(eventos) {
         if (diferenciaDias > 30) {
             const elementoSalto = document.createElement("div");
             elementoSalto.classList.add("salto-temporal");
-            const meses = Math.floor(diferenciaDias / 30);
-            elementoSalto.innerHTML = `<span>⏳ Salto de ${meses} ${meses === 1 ? 'mes' : 'meses'} ⏳</span>`;
+            
+            const totalMeses = Math.floor(diferenciaDias / 30);
+            const años = Math.floor(totalMeses / 12);
+            const mesesRestantes = totalMeses % 12;
+            
+            let textoSalto = "";
+            if (años > 0) {
+                const textoAños = años === 1 ? "1 año" : `${años} años`;
+                if (mesesRestantes > 0) {
+                    const textoMeses = mesesRestantes === 1 ? "1 mes" : `${mesesRestantes} meses`;
+                    textoSalto = `Salto de ${textoAños} y ${textoMeses}`;
+                } else {
+                    textoSalto = `Salto de ${textoAños}`;
+                }
+            } else {
+                textoSalto = `Salto de ${totalMeses} ${totalMeses === 1 ? 'mes' : 'meses'}`;
+            }
+            
+            elementoSalto.innerHTML = `<span>⏳ ${textoSalto} ⏳</span>`;
             contenedorLinea.appendChild(elementoSalto);
         }
 
@@ -88,11 +105,11 @@ function renderizarLineaDeTiempo(eventos) {
         // 4. CUARTO: Aplicamos un margen súper compacto proporcional al tiempo
         if (index > 0) {
             if (diferenciaDias > 30) {
-                // Margen muy pequeño si acaba de haber un cartel de salto
-                bloque.style.marginTop = "8px";
+                // Margen mínimo si acabamos de meter un cartel de salto
+                bloque.style.marginTop = "6px";
             } else {
-                // Distancia proporcional ultra compacta (solo 0.6px por día) + un mínimo de 4px
-                bloque.style.marginTop = `${4 + (diferenciaDias * 0.6)}px`;
+                // Separación ultra compacta (0.5px por día) + una base fija muy pequeña de 4px
+                bloque.style.marginTop = `${4 + (diferenciaDias * 0.5)}px`;
             }
         }
 

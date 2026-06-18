@@ -788,26 +788,33 @@ header h1{
    ========================================================================== */
 .salto-temporal {
     position: relative;
-    width: 100%;
-    max-width: 450px;
+    left: 20px;                 /* Alineado exactamente con el eje de la línea vertical */
+    transform: translateX(-50%); /* Centra el cartel justo en el medio de la línea */
+    width: auto;
+    max-width: fit-content;
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    
+    /* Forzamos márgenes negativos para anular el impacto del 'gap' del contenedor */
+    margin-top: -60px;   
+    margin-bottom: -70px;
+    
     z-index: 10;
+    display: inline-block;
 }
 
 /* El texto o indicador del salto */
 .salto-temporal span {
-    background-color: #1a1515; /* Fondo oscuro para tapar la línea vertical continua */
+    background-color: #121212; /* Fondo oscuro para tapar la línea vertical continua */
     color: #777;
     font-family: 'Crimson Text', serif;
     font-style: italic;
     font-size: 0.85rem;
-    padding: 4px 15px;
+    padding: 3px 12px;
     border: 1px dashed #443333;
     border-radius: 20px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-    letter-spacing: 1px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 /* Un pequeño efecto de interrupción en la línea detrás del texto (opcional) */
