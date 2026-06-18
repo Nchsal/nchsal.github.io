@@ -47,7 +47,7 @@ function renderizarLineaDeTiempo(eventos) {
             diferenciaDias = Math.floor((fechaActual - ultimaFecha) / (1000 * 60 * 60 * 24));
         }
 
-        // 1. PRIMERO: Si hay un salto de más de 30 días, se pone el cartel inmediatamente después de la tarjeta anterior
+        // 1. PRIMERO: Si hay un salto de más de 30 días, desglosamos en años y meses
         if (diferenciaDias > 30) {
             const elementoSalto = document.createElement("div");
             elementoSalto.classList.add("salto-temporal");
@@ -105,10 +105,10 @@ function renderizarLineaDeTiempo(eventos) {
         // 4. CUARTO: Aplicamos un margen súper compacto proporcional al tiempo
         if (index > 0) {
             if (diferenciaDias > 30) {
-                // Margen mínimo si acabamos de meter un cartel de salto
-                bloque.style.marginTop = "6px";
+                // Margen mínimo controlado si acaba de haber un salto
+                bloque.style.marginTop = "10px";
             } else {
-                // Separación ultra compacta (0.5px por día) + una base fija muy pequeña de 4px
+                // Distancia proporcional ultra compacta (solo 0.5px por día) + base fija de 4px
                 bloque.style.marginTop = `${4 + (diferenciaDias * 0.5)}px`;
             }
         }
